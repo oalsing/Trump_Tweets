@@ -1,4 +1,6 @@
 trump_tweet_data_archive/
+*~
+*.swp
 =======
 # Byte-compiled / optimized / DLL files
 __pycache__/
