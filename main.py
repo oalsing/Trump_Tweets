@@ -3,6 +3,7 @@
 """
 
 from __future__ import print_function
+from trump_data_extractor import create_trump_corpus
 import helper
 import numpy as np
 import random
@@ -12,9 +13,11 @@ from keras.models import load_model
 """
     Define global variables.
 """
-SEQUENCE_LENGTH = 40
-SEQUENCE_STEP = 3
-PATH_TO_CORPUS = "corpus.txt"
+SEQUENCE_LENGTH = 35
+SEQUENCE_STEP = 1
+TWEET_LENGTH = 120
+LSTM_SIZE = 256
+PATH_TO_CORPUS = "corpus"
 EPOCHS = 20
 DIVERSITY = 1.0
 
@@ -39,19 +42,22 @@ X, y = helper.vectorize(sequences, SEQUENCE_LENGTH, chars, char_to_index, next_c
 """
     Define the structure of the model.
 """
-model = helper.build_model(SEQUENCE_LENGTH, chars)
+model = helper.build_model(SEQUENCE_LENGTH, chars, LSTM_SIZE)
 
 """
     Train the model
 """
 
-# model.fit(X, y, batch_size=128, nb_epoch=EPOCHS)
-model = load_model("final.h5")  # you can skip training by loading the trained weights
+model.fit(X, y, batch_size=128, nb_epoch=EPOCHS)
+#model = load_model("final.h5")  # you can skip training by loading the trained weights
+model.save("final.h5")
 
 """
     Pick a random sequence and make the network continue
 """
 
+tweets = create_trump_corpus()
+tweets = [t for t in tweets if len(t) > SEQUENCE_LENGTH]
 
 for diversity in [0.2, 0.5, 1.0, 1.2]:
     print()
@@ -59,14 +65,16 @@ for diversity in [0.2, 0.5, 1.0, 1.2]:
 
     generated = ''
     # insert your 40-chars long string. OBS it needs to be exactly 40 chars!
-    sentence = "The grass is green and my car is red lik"
+    sentence = random.choice(tweets)[:SEQUENCE_LENGTH]
+    print(sentence)
+    #sentence = "The grass is green and my car is red lik"
     sentence = sentence.lower()
     generated += sentence
 
     print('----- Generating with seed: "' + sentence + '"')
     sys.stdout.write(generated)
 
-    for i in range(400):
+    for i in range(TWEET_LENGTH):
         x = np.zeros((1, SEQUENCE_LENGTH, len(chars)))
         for t, char in enumerate(sentence):
             x[0, t, char_to_index[char]] = 1.

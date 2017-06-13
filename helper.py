@@ -21,9 +21,9 @@ def create_sequences(text, sequence_length, step):
     return sequences, next_chars
 
 
-def build_model(sequence_length, chars):
+def build_model(sequence_length, chars, LSTM_SIZE):
     model = Sequential()
-    model.add(LSTM(128, input_shape=(sequence_length, len(chars))))
+    model.add(LSTM(LSTM_SIZE, input_shape=(sequence_length, len(chars))))
     model.add(Dense(len(chars)))
     model.add(Activation('softmax'))
 

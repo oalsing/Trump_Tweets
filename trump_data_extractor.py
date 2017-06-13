@@ -22,7 +22,7 @@ def read_file(filename):
         return tweets
 
 
-def read_all_tweets():
+def create_trump_corpus():
     years = range(2009, 2018)
     all_tweets = []
     for y in years:
@@ -48,8 +48,19 @@ def read_all_tweets():
         if file_exists:
             all_tweets += read_file(file)
 
-    return preprocess_tweets(all_tweets)
+
+    tweets = preprocess_tweets(all_tweets)
+
+    print("Average tweet length: %d" % (sum(map(len, tweets))/float(len(tweets))))
+
+    with open("corpus", "w") as f:
+        f.write(" ".join(tweets))
+
+    return tweets
+
 
 def preprocess_tweets(tweets):
     p_tweets = [t for t in tweets if len(t) > 1]
     return p_tweets
+
+create_trump_corpus()
