@@ -51,4 +51,6 @@ def read_all_tweets():
     print(len(all_tweets))
     return all_tweets
 
-read_all_tweets()
+tweets = read_all_tweets()
+print(min(tweets, key=len))
+
