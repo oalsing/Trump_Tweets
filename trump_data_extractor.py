@@ -48,9 +48,8 @@ def read_all_tweets():
         if file_exists:
             all_tweets += read_file(file)
 
-    print(len(all_tweets))
-    return all_tweets
+    return preprocess_tweets(all_tweets)
 
-tweets = read_all_tweets()
-print(min(tweets, key=len))
-
+def preprocess_tweets(tweets):
+    p_tweets = [t for t in tweets if len(t) > 1]
+    return p_tweets
